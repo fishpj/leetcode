@@ -9,18 +9,48 @@
 class Solution
 {
 	public:
+		void reverseList(ListNode *head)
+		{
+			//将head作为头节点处理
+			ListNode *p1 = head->next, *p2 = head->next;
+			while (p1->next)
+			{
+				p2 = p1->next;
+				p1->next = p1->next->next;
+				p2->next = head->next;
+				head->next = p2;
+			}
+			return;
+		}
 		void reorderList(ListNode *head)
 		{
+			//链表长度小于2时直接返回
 			if (NULL == head || NULL == head->next || NULL == head->next->next)
 			  return;
-			ListNode *p1 = head, *p2 = head->next;
-			while (p2->next)
+			//通过快慢指针找到中间节点
+			ListNode *slow = head, *fast = head;
+			while (fast->next && fast->next->next)
 			{
-				p1 = p2->next;
-				p2->next = p1->next;
-				p1 = head->next;
-				head->next = p1;
+				slow = slow->next;
+				fast = fast->next->next;
 			}
+			//将后半部分节点逆序
+			reverseList(slow);
+			//在slow处断开链表	
+			ListNode *p1 = head, *p2 = slow->next;
+			slow->next = NULL;
+			//标记待合并节点
+			ListNode *p = p2;
+			while (p2 != NULL)
+			{
+				p = p2;
+				//std::cout << p->val << std::endl;
+				p2 = p2->next;
+				p->next = p1->next;
+				p1->next = p;
+				p1 = p1->next->next;
+			}
+
 			return ;
 		}
 };
